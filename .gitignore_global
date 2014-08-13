@@ -1,0 +1,10 @@
+*~
+.DS_Store
+mega_fixtures.json
+#*#
+\#*#
+*.pyc
+.gems/*
+.gems
+elpa
+quelpa
