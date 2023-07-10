@@ -1,9 +1,10 @@
 { config, pkgs, ... }:
-
+let 
+  enableAmber = true;
+in
 {
   imports = [ 
-    #<home-manager/nix-darwin>
-    #./home.nix 
+    <home-manager/nix-darwin>
   ];
 
   environment.systemPackages = with pkgs; [
@@ -50,15 +51,21 @@
       "postman"
     ];
 
-    brews = [];
+    brews = [
+      "python@3.10"
+      "libfaketime"
+    ];
 
     taps = [
-    "homebrew/cask-fonts"
-    "homebrew/cask-drivers"
+      "homebrew/cask-fonts"
+      "homebrew/cask-drivers"
     ];    
   };
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
   system.stateVersion = 4;
+
+  home-manager.useUserPackages = true;
+  home-manager.users.loadx = (import ./home.nix {inherit enableAmber pkgs;});   
 }
