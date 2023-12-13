@@ -1,4 +1,4 @@
-{ pkgs, enableAmber ? false }:
+{ pkgs, enableAmber ? false, }:
 let
   homeDirectory = /Users/loadx;
   username = "Mat Brennan";
@@ -13,13 +13,10 @@ let
   */
 in
 {
-  # allow non gpl packages
-  nixpkgs.config.allowUnfree = true;
-
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home = {
-    stateVersion = "22.11";
+    stateVersion = "23.11";
     username = "loadx";
     homeDirectory = pkgs.lib.mkForce homeDirectory;
   };
@@ -62,7 +59,9 @@ in
     rnix-lsp
     aws-vault
     awscli2
+    ipcalc
     ssm-session-manager-plugin
+    postgresql
   ] ++ lib.optionals stdenv.isDarwin [
     # mac only things
     m-cli

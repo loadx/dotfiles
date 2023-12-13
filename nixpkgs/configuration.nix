@@ -1,11 +1,16 @@
-{ config, pkgs, ... }:
+{ pkgs, inputs, ... }:
 let 
-  enableAmber = true;
+  enableAmber = true; 
 in
 {
-  imports = [ 
-    <home-manager/nix-darwin>
-  ];
+  nix.useDaemon = true;
+
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+  home-manager.users.loadx = import ./home.nix {
+    pkgs = pkgs;
+    enableAmber = enableAmber;
+  };
 
   environment.systemPackages = with pkgs; [
     vim
@@ -16,11 +21,12 @@ in
 
   # Use a custom configuration.nix location.
   # $ darwin-rebuild switch -I darwin-config=$HOME/.config/nixpkgs/darwin/configuration.nix
-  environment.darwinConfig = "$HOME/.config/nixpkgs/darwin-configuration.nix";
+  environment.darwinConfig = "$HOME/./nixpkgs/configuration.nix";
 
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
-  nix.package = pkgs.nix;
+  nix.package = pkgs.nixFlakes;
+  nix.gc.automatic = true;
 
   # lorri
   services.lorri.enable = true;
@@ -49,6 +55,7 @@ in
       "rectangle"
       "alt-tab"
       "postman"
+      "mockoon"
     ];
 
     brews = [
@@ -59,13 +66,15 @@ in
     taps = [
       "homebrew/cask-fonts"
       "homebrew/cask-drivers"
-    ];    
+    ];
   };
+  
+  nix.extraOptions = ''
+    auto-optimise-store = true
+    experimental-features = nix-command flakes
+  '';
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
   system.stateVersion = 4;
-
-  home-manager.useUserPackages = true;
-  home-manager.users.loadx = (import ./home.nix {inherit enableAmber pkgs;});   
 }
