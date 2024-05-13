@@ -1,24 +1,19 @@
-{ pkgs, enableAmber ? false, }:
+{ pkgs, unstable, homeDirectory, username, emailAddress, enableAmber ? false, }:
 let
-  homeDirectory = /Users/loadx;
-  username = "Mat Brennan";
-  emailAddress = "mat.brennan@amber.com.au";
   userConfig = (if enableAmber then "_amber" else "");
-  /*   
-    unstable = import <nixos-unstable> { config = { allowUnfree = true; }; };
-    master = import (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/master.tar.gz";
-    sha256 = "1s2vy5n2pa7j5zbrzg757hrxccld43pv2lab7x16qnr6d11rw27v";
-    }) {}; 
-  */
 in
 {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home = {
     stateVersion = "23.11";
-    username = "loadx";
     homeDirectory = pkgs.lib.mkForce homeDirectory;
+  };
+
+  manual = {
+    html.enable = false;
+    manpages.enable = false;
+    json.enable = false;
   };
 
   # Let Home Manager install and manage itself.
@@ -40,30 +35,26 @@ in
     enableZshIntegration = true;
   };
 
+  # things non-specific to any system/arch
   home.packages = with pkgs; [
     zsh-powerlevel10k
     emacs-nox
-    zsh
-    tmux
     ripgrep
     curl
     wget
     jq
     niv
-    htop
     grc
     keychain
-    awscli2
     watch
     tree
-    rnix-lsp
-    aws-vault
-    awscli2
     ipcalc
-    ssm-session-manager-plugin
     postgresql
-  ] ++ lib.optionals stdenv.isDarwin [
-    # mac only things
-    m-cli
+    vim
+    fd
+    watch
+    gh
+    nixd
+    unstable.devenv
   ];
 }

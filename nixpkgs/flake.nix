@@ -19,15 +19,38 @@
     };
   };
 
-  outputs = { self, nix-darwin, nixpkgs, home-manager, ... }: {
-    darwinConfigurations = {
-      "Mats-MacBook-Pro" = nix-darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        modules = [ 
-          home-manager.darwinModules.home-manager
-          ./configuration.nix 
-        ];
+  outputs = inputs@{ self, nix-darwin, nixpkgs, nixpkgs-unstable, home-manager, ... }:
+    let 
+      system = "aarch64-darwin";
+      pkgs = nixpkgs-unstable.legacyPackages.${system};
+      unstable = nixpkgs-unstable.legacyPackages.${system};
+      enableAmber = true;
+    in {
+      darwinConfigurations = {
+        "Mats-MacBook-Pro" = nix-darwin.lib.darwinSystem {
+          inherit system;
+          modules = [ 
+            ./darwin.nix 
+
+            # setup home-manager 
+            home-manager.darwinModules.home-manager {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+
+                users.loadx = import ./home.nix {
+                  inherit pkgs unstable;
+                  homeDirectory = "/Users/loadx/";
+                  username = "loadx";
+                  emailAddress = "mat.brennan@amber.com.au";
+                  enableAmber = enableAmber;
+                };
+              };
+            }
+          ];
+
+          specialArgs = { inherit inputs; };
+        };
       };
     };
-  };
 }
