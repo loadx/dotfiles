@@ -19,6 +19,9 @@
       color = {
         ui = true;
       };
+      credential = {
+	helper = "cache";
+      };
     };
     ignores = [
       "*~"
