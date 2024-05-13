@@ -1,22 +1,15 @@
 { pkgs, inputs, ... }:
-let 
-  enableAmber = true; 
+let
+  nvmWrapped = pkgs.callPackage ./apps/nvm.nix { };
 in
 {
   nix.useDaemon = true;
 
-  home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = true;
-  home-manager.users.loadx = import ./home.nix {
-    pkgs = pkgs;
-    enableAmber = enableAmber;
-  };
-
   environment.systemPackages = with pkgs; [
-    vim
-    fd
-    htop
-    watch
+    # nvmWrapped
+    aws-vault
+    awscli2
+    ssm-session-manager-plugin
   ];
 
   # Use a custom configuration.nix location.
@@ -56,6 +49,16 @@ in
       "alt-tab"
       "postman"
       "mockoon"
+      "jd-gui"
+      "dbeaver-community"
+      "openvpn-connect"
+      "plex"
+      "postman"
+      "snowflake-snowsql"
+      "slack"
+      "the-unarchiver"
+      "utm"
+      "vyprvpn"
     ];
 
     brews = [
@@ -66,9 +69,10 @@ in
     taps = [
       "homebrew/cask-fonts"
       "homebrew/cask-drivers"
+      "homebrew/cask-versions"
     ];
   };
-  
+
   nix.extraOptions = ''
     auto-optimise-store = true
     experimental-features = nix-command flakes
