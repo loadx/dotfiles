@@ -3,13 +3,13 @@
 
   inputs = {
     # Pin our primary nixpkgs repository. This is the main nixpkgs repository
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
 
     # get out of jail
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.11";
+      url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -26,31 +26,33 @@
       unstable = nixpkgs-unstable.legacyPackages.${system};
       enableAmber = true;
     in {
-      darwinConfigurations = {
-        "Mats-MacBook-Pro" = nix-darwin.lib.darwinSystem {
-          inherit system;
-          modules = [ 
-            ./darwin.nix 
+      darwinConfigurations."Mats-MacBook-Pro" = nix-darwin.lib.darwinSystem {
+        inherit system;
+        modules = [ 
+          ./darwin.nix 
 
-            # setup home-manager 
-            home-manager.darwinModules.home-manager {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
+          # setup home-manager 
+          home-manager.darwinModules.home-manager rec {
+            home-manager = rec {
+              useGlobalPkgs = true;
+              useUserPackages = true;
 
-                users.loadx = import ./home.nix {
-                  inherit pkgs unstable;
-                  homeDirectory = "/Users/loadx/";
-                  username = "loadx";
-                  emailAddress = "mat.brennan@amber.com.au";
-                  enableAmber = enableAmber;
-                };
-              };
-            }
-          ];
+              users.loadx = (self: import ./home.nix {
+                inherit pkgs unstable;
+                homeDirectory = "/Users/loadx/";
+                username = "loadx";
+                emailAddress = "mat.brennan@amber.com.au";
+                gitFullName = "Mat Brennan";
+                enableAmber = enableAmber;
+                config = self.config;
+              });
+            };
+          }
+        ];
 
-          specialArgs = { inherit inputs; };
-        };
+        specialArgs = { inherit inputs; };
       };
+
+      darwinPackages = self.darwinConfigurations."Mats-MacBook-Pro".pkgs;
     };
-}
+  }

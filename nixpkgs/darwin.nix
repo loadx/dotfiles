@@ -5,12 +5,6 @@ in
 {
   nix.useDaemon = true;
 
-  environment.systemPackages = with pkgs; [
-    # nvmWrapped
-    aws-vault
-    awscli2
-    ssm-session-manager-plugin
-  ];
 
   # Use a custom configuration.nix location.
   # $ darwin-rebuild switch -I darwin-config=$HOME/.config/nixpkgs/darwin/configuration.nix
@@ -59,11 +53,15 @@ in
       "the-unarchiver"
       "utm"
       "vyprvpn"
+      "session-manager-plugin"
     ];
 
     brews = [
-      "python@3.10"
       "libfaketime"
+      "pipx"
+      "aws-vault"
+      "pyenv"
+      "awscli"
     ];
 
     taps = [
@@ -82,3 +80,4 @@ in
   # $ darwin-rebuild changelog
   system.stateVersion = 4;
 }
+

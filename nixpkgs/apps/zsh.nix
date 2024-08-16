@@ -31,6 +31,7 @@
         "git"
         "keychain"
         "ripgrep"
+        "pyenv"
       ];
     };
     zplug = {

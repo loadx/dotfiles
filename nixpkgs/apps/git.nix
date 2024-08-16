@@ -1,9 +1,9 @@
-{ lib, pkgs, username, emailAddress }:
+{ lib, pkgs, gitFullName, emailAddress }:
 
 {
   git = {
     enable = true;
-    userName = "${username}";
+    userName = "${gitFullName}";
     userEmail = "${emailAddress}";
     #package = master.git;
     aliases = {
