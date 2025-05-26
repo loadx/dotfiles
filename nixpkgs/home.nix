@@ -1,26 +1,37 @@
-{ pkgs, unstable, homeDirectory, username, emailAddress, gitFullName, config, enableAmber ? false, }:
+{
+  pkgs,
+  homeDirectory,
+  username,
+  emailAddress,
+  gitFullName,
+  config,
+  enableAmber ? false,
+}:
 let
   userConfig = (if enableAmber then "_amber" else "");
-  /* configDir = config.xdg.configHome;
-    overrideConfigFiles = (configMap: 
+in
+/*
+  configDir = config.xdg.configHome;
+    overrideConfigFiles = (configMap:
     builtins.mapAttrs
       (outFile: sourceFile:
         pkgs.lib.mkForce { source = config.lib.file.mkOutOfStoreSymlink sourceFile; }
       )
       configMap
-  );*/
-in
+  );
+*/
 {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home = {
-    stateVersion = "23.11";
+    stateVersion = "25.05";
     homeDirectory = pkgs.lib.mkForce homeDirectory;
-    /* file = overrideConfigFiles {
-      "${configDir}/kitty/kitty.conf" = /Users/loadx/kitty.conf;
-    }; */
+    /*
+      file = overrideConfigFiles {
+        "${configDir}/kitty/kitty.conf" = /Users/loadx/kitty.conf;
+      };
+    */
   };
-
 
   manual = {
     html.enable = false;
@@ -31,7 +42,8 @@ in
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
-  programs.zsh = (pkgs.callPackage ./apps/zsh${userConfig}.nix { inherit homeDirectory emailAddress pkgs; }).zsh;
+  programs.zsh =
+    (pkgs.callPackage ./apps/zsh${userConfig}.nix { inherit homeDirectory emailAddress pkgs; }).zsh;
   programs.git = (pkgs.callPackage ./apps/git.nix { inherit gitFullName emailAddress; }).git;
   programs.tmux = (pkgs.callPackage ./apps/tmux.nix { }).tmux;
   programs.kitty = (pkgs.callPackage ./apps/kitty.nix { }).kitty;
@@ -47,11 +59,10 @@ in
     enableZshIntegration = true;
   };
 
-
   # things non-specific to any system/arch
   home.packages = with pkgs; [
     zsh-powerlevel10k
-    emacs-nox
+    (emacs.override { withNativeCompilation = false; })
     ripgrep
     curl
     wget
@@ -68,7 +79,7 @@ in
     watch
     gh
     nixd
-    nixpkgs-fmt
-    unstable.devenv
+    nixfmt-rfc-style
+    devenv
   ];
 }
