@@ -26,6 +26,8 @@
       set -g window-status-current-format "#[fg=colour0,bg=colour31]#[fg=colour117,bg=colour31] #I  #[fg=colour231,bold]#W #[fg=colour31,bg=colour0,nobold]"
       set -g status-fg colour255
       set -g status-bg colour0 
+      set -g default-shell $SHELL
+      set -g default-command "exec zsh"
       #set -g window-status-fg colour249
     '';
   };
